@@ -2,23 +2,21 @@ apply plugin: 'com.android.library'
 
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion versions.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion versions.minSdkVersion
+        targetSdkVersion versions.targetSdkVersion
+        versionCode versions.versionCode
+        versionName versions.versionName
     }
 
     signingConfigs {
         app {
-            storeFile file(STOREFILE_APP)
-            storePassword STOREPASSWORD_APP
-            keyAlias KEYALIAS_APP
-            keyPassword KEYPASSWORD_APP
+            storeFile file(key.STOREFILE_APP)
+            storePassword key.STOREPASSWORD_APP
+            keyAlias key.KEYALIAS_APP
+            keyPassword key.KEYPASSWORD_APP
         }
     }
 
@@ -39,10 +37,6 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
-            aidl.srcDirs = ['src/module/aidl']
-            res.srcDirs = ['src/res']
-            java.srcDirs = ['src/module/java', 'src/module/aidl']
-            manifest.srcFile 'src/module/AndroidManifest.xml'
         }
     }
 
