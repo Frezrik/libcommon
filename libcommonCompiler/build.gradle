@@ -9,6 +9,8 @@ def rtPath = {
 
 dependencies {
     compileOnly files(rtPath())
-    implementation 'com.google.auto.service:auto-service:1.0-rc4'
     implementation 'com.squareup:javapoet:1.9.0'
+    implementation project(path: ':libcommonAnnotation')
+    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc4'
+    implementation 'com.google.auto.service:auto-service:1.0-rc4'
 }

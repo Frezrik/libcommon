@@ -1,103 +1,113 @@
 apply plugin: 'com.android.library'
 
-
 android {
-    compileSdkVersion versions.compileSdkVersion
+  compileSdkVersion versions.compileSdkVersion
 
-    defaultConfig {
-        minSdkVersion versions.minSdkVersion
-        targetSdkVersion versions.targetSdkVersion
-        versionCode versions.versionCode
-        versionName versions.versionName
+  defaultConfig {
+    minSdkVersion versions.minSdkVersion
+    targetSdkVersion versions.targetSdkVersion
+    versionCode versions.versionCode
+    versionName versions.versionName
+  }
+
+  signingConfigs {
+    app {
+      storeFile file(key.STOREFILE_APP)
+      storePassword key.STOREPASSWORD_APP
+      keyAlias key.KEYALIAS_APP
+      keyPassword key.KEYPASSWORD_APP
     }
+  }
 
-    signingConfigs {
-        app {
-            storeFile file(key.STOREFILE_APP)
-            storePassword key.STOREPASSWORD_APP
-            keyAlias key.KEYALIAS_APP
-            keyPassword key.KEYPASSWORD_APP
-        }
+  buildTypes {
+    release {
+      minifyEnabled false
+      //shrinkResources true
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            //shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            minifyEnabled false
-            //shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.app
-        }
+    debug {
+      minifyEnabled false
+      //shrinkResources true
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      signingConfig signingConfigs.app
     }
+  }
 
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
+  sourceSets {
+    main {
+      jniLibs.srcDirs = ['libs']
     }
+  }
 
-    externalNativeBuild {
-        ndkBuild {
-            //path 'jni/Android.mk'
-        }
+  externalNativeBuild {
+    ndkBuild {
+      //path 'jni/Android.mk'
     }
+  }
 
-    lintOptions {
-        //checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
-        abortOnError false
-    }
+  lintOptions {
+    //checkReleaseBuilds false
+    // Or, if you prefer, you can continue to check for errors in release builds,
+    // but continue the build even when errors are found:
+    abortOnError false
+  }
 
-    resourcePrefix "common_"
-}
-
-dependencies {
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-
-    //transitive关键字,传递依赖
-    //api group: 'com.frezrik.support', name: 'utils', version: '1.0', transitive: true
-    /*api('com.frezrik.support:utils:1.0') {
-        transitive = true
-    }*/
-
-    implementation 'com.madgag.spongycastle:core:1.58.0.0'
-
-    //system api
-    compileOnly files('libs/layoutlib.jar')
+  resourcePrefix "common_"
 }
 
 preBuild {
-    doLast {
-        def imlFile = file(project.name + ".iml")
-        try {
-            def parsedXml = new XmlParser().parse(imlFile)
+  doLast {
+    def imlFile = file(project.name + ".iml")
+    try {
+      def parsedXml = new XmlParser().parse(imlFile)
 
-            def libsubPath
-            if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
-                libsubPath = '\\libcommon\\libs\\layoutlib.jar:unspecified@jar'
-            } else {
-                libsubPath = '/libcommon/libs/layoutlib.jar:unspecified@jar'
-            }
-            def libPath = 'Gradle: __local_aars__:' + project.rootDir.getAbsolutePath().replace(':', '.') + libsubPath
-            def libNode = parsedXml.component[1].orderEntry.find { it.@name == libPath }
-            def contentNode = parsedXml.component[1].find { it.name() == 'content' }
+      def libsubPath
+      if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+        libsubPath = '\\libcommon\\libs\\layoutlib.jar:unspecified@jar'
+      } else {
+        libsubPath = '/libcommon/libs/layoutlib.jar:unspecified@jar'
+      }
+      def libPath = 'Gradle: __local_aars__:' + project.rootDir.getAbsolutePath().
+          replace(':', '.') + libsubPath
+      def libNode = parsedXml.component[1].orderEntry.find { it.@name == libPath }
+      def contentNode = parsedXml.component[1].find { it.name() == 'content' }
 
-            if (libNode != null) {
-                parsedXml.component[1].remove(libNode)
-                contentNode.plus {
-                    new Node(parsedXml.component[1], 'orderEntry', ['type': 'library', 'name': libPath, 'level': 'project'])
-                }
-            }
-
-            groovy.xml.XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
-        } catch (FileNotFoundException e) {
-            println "no iml found"
+      if (libNode != null) {
+        parsedXml.component[1].remove(libNode)
+        contentNode.plus {
+          new Node(parsedXml.component[1], 'orderEntry',
+              ['type': 'library', 'name': libPath, 'level': 'project'])
         }
+      }
+
+      groovy.xml.XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
+    } catch (FileNotFoundException e) {
+      println "no iml found"
     }
+  }
 }
+
+dependencies {
+  implementation deps.appcompat
+  implementation deps.constraintLayout
+
+  //transitive关键字,传递依赖
+  //api group: 'com.frezrik.support', name: 'utils', version: '1.0', transitive: true
+  /*api('com.frezrik.support:utils:1.0') {
+      transitive = true
+  }*/
+
+  ///implementation 'com.madgag.spongycastle:core:1.58.0.0'
+  api 'com.belerweb:pinyin4j:2.5.0'
+  api 'commons-codec:commons-codec:1.11'
+
+
+  //system api
+  compileOnly files('libs/layoutlib.jar')
+
+  // libcommonAnnotation
+  api project(path: ':libcommonAnnotation')
+
+}
+
+apply from: '../common-build.gradle'

@@ -113,7 +113,7 @@ public class ApiProcessor extends AbstractProcessor {
                 log.i("     >>>>> WriteToFile <<<<<");
                 writeToFile(bindTables);
 
-                deleteApiTables();
+                //deleteApiTables();
                 bindTables.clear();
             }
 

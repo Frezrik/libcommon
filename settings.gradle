@@ -1,2 +1,2 @@
-include ':app', ':common', 'libcommonCompiler'
+include ':app', ':common', 'libcommonCompiler', 'libcommonAnnotation'
 rootProject.name='libcommon'

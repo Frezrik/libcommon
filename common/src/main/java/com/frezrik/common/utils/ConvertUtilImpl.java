@@ -1,7 +1,7 @@
 package com.frezrik.common.utils;
 
-import com.frezrik.core.api.ConvertUtil;
-import com.frezrik.router.annotation.ApiImpl;
+import com.frezrik.common.annotation.ApiImpl;
+import com.frezrik.common.api.ConvertUtil;
 
 @ApiImpl
 public class ConvertUtilImpl implements ConvertUtil {

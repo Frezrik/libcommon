@@ -2,8 +2,8 @@ package com.frezrik.common.utils;
 
 import android.graphics.*;
 import android.util.Log;
-import com.frezrik.core.api.ImageTools;
-import com.frezrik.router.annotation.ApiImpl;
+import com.frezrik.common.annotation.ApiImpl;
+import com.frezrik.common.api.ImageTools;
 
 import java.util.Random;
 
