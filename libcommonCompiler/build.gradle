@@ -1,16 +1,20 @@
 apply plugin: 'java-library'
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = "7"
+targetCompatibility = "7"
 
 def rtPath = {
     System.getProperty("java.home") + '/lib/rt.jar'
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly files(rtPath())
     implementation 'com.squareup:javapoet:1.9.0'
     implementation project(path: ':libcommonAnnotation')
     annotationProcessor 'com.google.auto.service:auto-service:1.0-rc4'
     implementation 'com.google.auto.service:auto-service:1.0-rc4'
+
+    implementation 'org.apache.commons:commons-lang3:3.5'
+    implementation 'org.apache.commons:commons-collections4:4.1'
 }

@@ -107,7 +107,8 @@ dependencies {
 
   // libcommonAnnotation
   api project(path: ':libcommonAnnotation')
-
+  implementation project(path: ':libcommonCompiler')
+  annotationProcessor project(path: ':libcommonCompiler')
 }
 
 apply from: '../common-build.gradle'

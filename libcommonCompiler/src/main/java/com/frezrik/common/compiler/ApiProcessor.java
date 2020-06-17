@@ -37,8 +37,6 @@ public class ApiProcessor extends AbstractProcessor {
 
         filer = processingEnv.getFiler();
 
-        log = new Log(processingEnv.getMessager());
-
         elementUtils = processingEnv.getElementUtils();
 
         log.i(">>>>> ApiProcessor init <<<<<");
@@ -113,7 +111,7 @@ public class ApiProcessor extends AbstractProcessor {
                 log.i("     >>>>> WriteToFile <<<<<");
                 writeToFile(bindTables);
 
-                //deleteApiTables();
+                deleteApiTables();
                 bindTables.clear();
             }
 

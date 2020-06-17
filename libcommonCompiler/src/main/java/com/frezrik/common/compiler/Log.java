@@ -1,5 +1,10 @@
 package com.frezrik.common.compiler;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -9,16 +14,18 @@ import javax.tools.Diagnostic;
  * Log for apt
  */
 public class Log {
-    private Messager msg;
-    private final String PREFIX_OF_LOG = "[libcommon Compiler]: ";
+    private final static String PREFIX_OF_LOG = "[libcommon Compiler] ";
+    private final static String LOG_FILE = "debug.log";
 
-    public Log(Messager messager) {
-        msg = messager;
+    public static void clear() {
+        File file = new File(LOG_FILE);
+        if (file.exists())
+            file.delete();
     }
 
-    public void i(CharSequence info) {
+    public static void i(CharSequence info) {
         if (isNotEmpty(info)) {
-            msg.printMessage(Diagnostic.Kind.NOTE, PREFIX_OF_LOG + info);
+            printMessage(PREFIX_OF_LOG + "I: " + info);
         }
     }
 
@@ -62,5 +69,15 @@ public class Log {
     private  static  boolean isNotEmpty(final CharSequence cs) {
         boolean isEmpty =  cs == null || cs.length() == 0;
         return !isEmpty;
+    }
+
+    private static void printMessage(String msg) {
+        try {
+            BufferedOutputStream bos =
+                    new BufferedOutputStream(new FileOutputStream(new File(LOG_FILE), true));
+            bos.write();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
