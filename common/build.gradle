@@ -52,6 +52,11 @@ android {
     abortOnError false
   }
 
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
   resourcePrefix "common_"
 }
 
@@ -100,14 +105,14 @@ dependencies {
   ///implementation 'com.madgag.spongycastle:core:1.58.0.0'
   api 'com.belerweb:pinyin4j:2.5.0'
   api 'commons-codec:commons-codec:1.11'
-
+  implementation 'org.apache.commons:commons-lang3:3.5'
+  implementation 'org.apache.commons:commons-collections4:4.1'
 
   //system api
   compileOnly files('libs/layoutlib.jar')
 
   // libcommonAnnotation
   api project(path: ':libcommonAnnotation')
-  implementation project(path: ':libcommonCompiler')
   annotationProcessor project(path: ':libcommonCompiler')
 }
 

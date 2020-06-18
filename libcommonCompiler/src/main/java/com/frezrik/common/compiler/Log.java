@@ -2,12 +2,12 @@ package com.frezrik.common.compiler;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
 /**
@@ -15,7 +15,7 @@ import javax.tools.Diagnostic;
  */
 public class Log {
     private final static String PREFIX_OF_LOG = "[libcommon Compiler] ";
-    private final static String LOG_FILE = "debug.log";
+    private final static String LOG_FILE = "libcommonCompiler/debug.log";
 
     public static void clear() {
         File file = new File(LOG_FILE);
@@ -23,41 +23,35 @@ public class Log {
             file.delete();
     }
 
-    public static void i(CharSequence info) {
+    public static void i(String info) {
         if (isNotEmpty(info)) {
             printMessage(PREFIX_OF_LOG + "I: " + info);
         }
     }
 
-    public void e(CharSequence error) {
+    public static void e(String error) {
         if (isNotEmpty(error)) {
-            msg.printMessage(Diagnostic.Kind.ERROR, PREFIX_OF_LOG + "An exception is encountered, [" + error + "]");
+            printMessage(PREFIX_OF_LOG + "E: An exception is encountered, [" + error + "]");
         }
     }
 
-    public void e(Element element, String message, Object... args) {
+    public static void e(Throwable error) {
+        if (null != error) {
+            printMessage(PREFIX_OF_LOG + "E: An exception is encountered, [" + error.getMessage() + "]" + "\n" + formatStackTrace(error.getStackTrace()));
+        }
+    }
+
+    public static void e(Element element, String message, Object... args) {
         if (isNotEmpty(message) && element != null) {
             if (args.length > 0) {
                 message = String.format(message, args);
             }
 
-            msg.printMessage(Diagnostic.Kind.ERROR, PREFIX_OF_LOG + message, element);
+            printMessage(PREFIX_OF_LOG + "E: " + message + ". " +element.toString());
         }
     }
 
-    public void e(Throwable error) {
-        if (null != error) {
-            msg.printMessage(Diagnostic.Kind.ERROR, PREFIX_OF_LOG + "An exception is encountered, [" + error.getMessage() + "]" + "\n" + formatStackTrace(error.getStackTrace()));
-        }
-    }
-
-    public void w(CharSequence warning) {
-        if (isNotEmpty(warning)) {
-            msg.printMessage(Diagnostic.Kind.WARNING, PREFIX_OF_LOG + warning);
-        }
-    }
-
-    private String formatStackTrace(StackTraceElement[] stackTrace) {
+    private static String formatStackTrace(StackTraceElement[] stackTrace) {
         StringBuilder sb = new StringBuilder();
         for (StackTraceElement element : stackTrace) {
             sb.append("    at ").append(element.toString());
@@ -66,17 +60,23 @@ public class Log {
         return sb.toString();
     }
 
-    private  static  boolean isNotEmpty(final CharSequence cs) {
-        boolean isEmpty =  cs == null || cs.length() == 0;
+    private static boolean isNotEmpty(final CharSequence cs) {
+        boolean isEmpty = cs == null || cs.length() == 0;
         return !isEmpty;
+    }
+
+    private static String getTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:ss:SS", Locale.getDefault());
+        return sdf.format(new Date());
     }
 
     private static void printMessage(String msg) {
         try {
             BufferedOutputStream bos =
                     new BufferedOutputStream(new FileOutputStream(new File(LOG_FILE), true));
-            bos.write();
-        } catch (FileNotFoundException e) {
+            bos.write((getTime() + " " + msg + "\n").getBytes());
+            bos.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

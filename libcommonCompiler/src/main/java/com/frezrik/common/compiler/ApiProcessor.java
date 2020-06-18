@@ -25,11 +25,10 @@ import static javax.lang.model.element.Modifier.STATIC;
 public class ApiProcessor extends AbstractProcessor {
 
     private Filer filer;
-    private Log log;
     private Elements elementUtils;
     private Map<ClassName, ClassName> tempTables;
 
-    private static final String API_PATH = "api_tables";
+    private static final String API_PATH = "libcommonCompiler/api_tables";
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -39,12 +38,14 @@ public class ApiProcessor extends AbstractProcessor {
 
         elementUtils = processingEnv.getElementUtils();
 
-        log.i(">>>>> ApiProcessor init <<<<<");
+        Log.clear();
+
+        Log.i(">>>>> ApiProcessor init <<<<<");
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        log.i(">>>>> ApiProcessor process <<<<<");
+        Log.i(">>>>> ApiProcessor process <<<<<");
 
         // 获取ApiTables
         Set<? extends Element> apiNode = roundEnv.getElementsAnnotatedWith(ApiImpl.class);
@@ -57,14 +58,14 @@ public class ApiProcessor extends AbstractProcessor {
                 if (interfaces != null && interfaces.size() > 0) {
                     String ifName = interfaces.get(0).toString();
                     writeApiTables(implName, ifName);
-                    log.i("======>>>>>" + implName + ":" + ifName);
+                    Log.i("======>>>>>" + implName + ":" + ifName);
                 }
             }
         }
 
         tempTables = readApiTables();
         if (tempTables.size() != 0) {
-            log.i("     >>>>> ParserApiTables <<<<<");
+            Log.i("     >>>>> ParserApiTables <<<<<");
             Map<ClassName, Set<BindingSet>> bindTables = new HashMap<>();
             // 获取BindApi
             Set<BindingSet> fieldSet;
@@ -101,14 +102,14 @@ public class ApiProcessor extends AbstractProcessor {
                         fieldSet.add(bs);
                         bindTables.put(targetName, fieldSet);
 
-                        log.i("          >>>>>" + targetName + "#" + fieldType + "#" + bs.fieldTypeImpl + "#" + fieldName);
+                        Log.i("          >>>>>" + targetName + "#" + fieldType + "#" + bs.fieldTypeImpl + "#" + fieldName);
                     }
 
                 }
             }
 
             if (bindTables.size() != 0) {
-                log.i("     >>>>> WriteToFile <<<<<");
+                Log.i("     >>>>> WriteToFile <<<<<");
                 writeToFile(bindTables);
 
                 deleteApiTables();
@@ -160,7 +161,7 @@ public class ApiProcessor extends AbstractProcessor {
         // Verify method modifiers.
         Set<Modifier> modifiers = element.getModifiers();
         if (modifiers.contains(PRIVATE) || modifiers.contains(STATIC)) {
-            log.e(element, "@%s %s must not be private or static. (%s.%s)",
+            Log.e(element, "@%s %s must not be private or static. (%s.%s)",
                     annotationClass.getSimpleName(), targetThing, enclosingElement.getQualifiedName(),
                     element.getSimpleName());
             hasError = true;
@@ -168,7 +169,7 @@ public class ApiProcessor extends AbstractProcessor {
 
         // Verify containing type.
         if (enclosingElement.getKind() != CLASS) {
-            log.e(enclosingElement, "@%s %s may only be contained in classes. (%s.%s)",
+            Log.e(enclosingElement, "@%s %s may only be contained in classes. (%s.%s)",
                     annotationClass.getSimpleName(), targetThing, enclosingElement.getQualifiedName(),
                     element.getSimpleName());
             hasError = true;
@@ -176,7 +177,7 @@ public class ApiProcessor extends AbstractProcessor {
 
         // Verify containing class visibility is not private.
         if (enclosingElement.getModifiers().contains(PRIVATE)) {
-            log.e(enclosingElement, "@%s %s may not be contained in private classes. (%s.%s)",
+            Log.e(enclosingElement, "@%s %s may not be contained in private classes. (%s.%s)",
                     annotationClass.getSimpleName(), targetThing, enclosingElement.getQualifiedName(),
                     element.getSimpleName());
             hasError = true;
@@ -191,12 +192,12 @@ public class ApiProcessor extends AbstractProcessor {
         String qualifiedName = enclosingElement.getQualifiedName().toString();
 
         if (qualifiedName.startsWith("android.")) {
-            log.e(element, "@%s-annotated class incorrectly in Android framework package. (%s)",
+            Log.e(element, "@%s-annotated class incorrectly in Android framework package. (%s)",
                     annotationClass.getSimpleName(), qualifiedName);
             return true;
         }
         if (qualifiedName.startsWith("java.")) {
-            log.e(element, "@%s-annotated class incorrectly in Java framework package. (%s)",
+            Log.e(element, "@%s-annotated class incorrectly in Java framework package. (%s)",
                     annotationClass.getSimpleName(), qualifiedName);
             return true;
         }
@@ -207,7 +208,7 @@ public class ApiProcessor extends AbstractProcessor {
     private void deleteApiTables() {
         File file = new File(API_PATH);
         if (file.exists()) {
-            log.i("     >>>>> DeleteApiTables <<<<<");
+            Log.i("     >>>>> DeleteApiTables <<<<<");
             file.delete();
         }
     }
