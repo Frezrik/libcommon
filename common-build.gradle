@@ -24,9 +24,13 @@ def isAndroid() {
       hasPlugin('com.android.library')
 }
 
+def isJava() {
+  return project.getPlugins().hasPlugin('java-library')
+}
+
 def getLocalRepositoryUrl() {
   return hasProperty('LOCAL_REPOSITORY_URL') ? LOCAL_REPOSITORY_URL
-      : rootProject.rootDir.toString() + (isAndroid() ? "/lilbrary" : "/plugin")
+      : rootProject.rootDir.toString() + (isAndroid() || isJava() ? "lilbrary" : "plugin")
 }
 
 afterEvaluate { project ->
@@ -99,7 +103,7 @@ afterEvaluate { project ->
       from androidJavadocs.destinationDir
     }
 
-    task androidSourcesJar(type: Jar) {
+    /*task androidSourcesJar(type: Jar) {
       classifier = 'sources'
       from android.sourceSets.main.java.source
     }
@@ -112,16 +116,16 @@ afterEvaluate { project ->
     task javadocJar(type: Jar, dependsOn: javadoc) {
       classifier = 'javadoc'
       from javadoc.destinationDir
-    }
+    }*/
   }
 
   artifacts {
     if (isAndroid()) {
-      archives androidSourcesJar
+      //archives androidSourcesJar
       archives androidJavadocsJar
-    } else {
+    }/* else {
       archives sourcesJar
       archives javadocJar
-    }
+    }*/
   }
 }
