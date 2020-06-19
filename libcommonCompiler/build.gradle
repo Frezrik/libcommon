@@ -12,10 +12,10 @@ dependencies {
     compileOnly files(rtPath())
 
     implementation 'com.squareup:javapoet:1.9.0'
-    implementation project(path: ':libcommonAnnotation')
-
     implementation 'com.google.auto.service:auto-service:1.0-rc3'
     annotationProcessor 'com.google.auto.service:auto-service:1.0-rc3'
+
+    implementation 'com.frezrik.support:common-annotation:+@jar'
 }
 
 apply from: '../common-build.gradle'

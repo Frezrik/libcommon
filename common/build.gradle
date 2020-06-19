@@ -112,8 +112,10 @@ dependencies {
   compileOnly files('libs/layoutlib.jar')
 
   // libcommonAnnotation
-  api project(path: ':libcommonAnnotation')
+  //api project(path: ':libcommonAnnotation')
+  api 'com.frezrik.support:common-annotation:+@jar'
   annotationProcessor project(path: ':libcommonCompiler')
+  //annotationProcessor 'com.frezrik.support:common-compiler:+@jar'
 }
 
 apply from: '../common-build.gradle'
