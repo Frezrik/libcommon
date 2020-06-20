@@ -28,7 +28,7 @@ public class ApiProcessor extends AbstractProcessor {
     private Elements elementUtils;
     private Map<ClassName, ClassName> tempTables;
 
-    private static final String API_PATH = "libcommonCompiler/api_tables";
+    private static final String API_PATH = "/libcommonCompiler/api_tables";
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {

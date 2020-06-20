@@ -30,7 +30,7 @@ def isJava() {
 
 def getLocalRepositoryUrl() {
   return hasProperty('LOCAL_REPOSITORY_URL') ? LOCAL_REPOSITORY_URL
-      : rootProject.rootDir.toString() + (isAndroid() || isJava() ? "/Repository/lilbrary" : "/Repository/plugin")
+      : rootProject.rootDir.toString() + (isAndroid() || isJava() ? "/maven/lilbrary" : "/maven/plugin")
 }
 
 afterEvaluate { project ->

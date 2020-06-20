@@ -113,9 +113,9 @@ dependencies {
 
   // libcommonAnnotation
   //api project(path: ':libcommonAnnotation')
-  api 'com.frezrik.support:common-annotation:+@jar'
-  annotationProcessor project(path: ':libcommonCompiler')
-  //annotationProcessor 'com.frezrik.support:common-compiler:+@jar'
+  //annotationProcessor project(path: ':libcommonCompiler')
+  api 'com.frezrik.support:common-annotation:1.0.0'
+  annotationProcessor 'com.frezrik.support:common-compiler:1.0.0'
 }
 
 apply from: '../common-build.gradle'
